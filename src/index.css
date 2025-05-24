@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.App {
+  text-align: center;
+}
+
+/* Removing conflicting App-header styles as they are defined in App.css */
+
+input[type="text"],
+select {
+  margin: 5px;
+  padding: 5px;
+  width: 300px;
+}
+
+button {
+  margin: 3px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+table {
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 5px 8px;
+  font-size: 13px;
+}
+
+th {
+  background-color: #f2f2f2;
+}
