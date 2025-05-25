@@ -5,16 +5,20 @@
   margin: 0 auto;
   padding: 5px;
   font-size: 14px;
+  background-color: #000000;
+  min-height: 100vh;
+  color: #ffffff;
 }
 
 /* API Key Input Component */
 .api-key-input {
-  background-color: white;
+  background-color: #1a1a1a;
+  color: #ffffff;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border: 1px solid #444;
+  box-shadow: 0 2px 5px rgba(255,255,255,0.05);
 }
 
 .api-key-form {
@@ -31,7 +35,7 @@
 
 .api-key-help {
   font-size: 11px;
-  color: #555;
+  color: #ccc;
   text-align: left;
   margin-top: 5px;
 }
@@ -60,9 +64,9 @@
 }
 
 .toggle-visibility {
-  background-color: #f0f0f0;
+  background-color: #450671;
   color: #333;
-  border: 1px solid #ddd;
+  border: 1px solid #12ac69;
 }
 
 .toggle-visibility.small {

@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #000000;
+  color: #ffffff;
 }
 
 code {
@@ -23,12 +25,25 @@ select {
   margin: 5px;
   padding: 5px;
   width: 300px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #444;
+  border-radius: 4px;
 }
 
 button {
   margin: 3px;
   padding: 8px 12px;
   font-size: 13px;
+  background-color: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #444;
 }
 
 table {
@@ -38,11 +53,12 @@ table {
 }
 
 th, td {
-  border: 1px solid #ddd;
+  border: 1px solid #444;
   padding: 5px 8px;
   font-size: 13px;
+  color: #ffffff;
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #2a2a2a;
 }
