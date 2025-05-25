@@ -47,6 +47,7 @@ const AudioList = ({ audioFiles, onDownload }) => {
                     <input
                       type="checkbox"
                       id={`checkbox-${index}`}
+                      checked={file.checked} // Bind the checked state to the file's checked property
                       onChange={(e) => {
                         // Dispatch an event to notify about check state change
                         const event = new CustomEvent('fileCheckChanged', {

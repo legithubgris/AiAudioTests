@@ -279,22 +279,31 @@ const App = () => {
    */
   const handleBulkDownload = async () => {
     const selectedFiles = audioFiles.filter(file => file.checked);
+
     if (selectedFiles.length === 0) {
-      // If none selected, download all
-      audioFiles.forEach((file, index) => handleDownload(index));
-    } else {
-      // Download only selected
+      alert('No files selected for download. Please select files or check all to download.');
+      return;
+    }
+
+    try {
       const zip = new JSZip();
+
       for (const file of selectedFiles) {
         if (file.url) {
-          const response = await fetch(file.url);
+          const response = await fetch(URL.createObjectURL(file.url));
           const blob = await response.blob();
           zip.file(file.name, blob);
+        } else {
+          console.warn(`File ${file.name} has no URL and will be skipped.`);
         }
       }
 
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       saveAs(zipBlob, 'audio_files.zip');
+      console.log('ZIP file created and download initiated.');
+    } catch (error) {
+      console.error('Error creating ZIP file:', error);
+      alert('An error occurred while creating the ZIP file. Please try again.');
     }
   };
 
