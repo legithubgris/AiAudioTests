@@ -9,6 +9,9 @@ import React from 'react';
  * @param {string} audioFiles[].name - File name
  * @param {Blob} audioFiles[].url - Audio blob data
  * @param {string} audioFiles[].prompt - Original text prompt
+ * @param {string} audioFiles[].voice - Voice used for generation
+ * @param {string} audioFiles[].model - Model used for generation
+ * @param {string} audioFiles[].instructions - Instructions/persona used
  * @param {boolean} audioFiles[].checked - Whether the file is selected
  * @param {boolean} audioFiles[].error - Whether there was an error generating this file
  * @param {function} onDownload - Function to handle download action, receives file index
@@ -25,8 +28,10 @@ const AudioList = ({ audioFiles, onDownload }) => {
           <thead>
             <tr>
               <th>File Name</th>
-              <th>Length</th>
+              <th>Voice</th>
+              <th>Model</th>
               <th>Prompt Text</th>
+              <th>Instructions</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -34,8 +39,10 @@ const AudioList = ({ audioFiles, onDownload }) => {
             {audioFiles.map((file, index) => (
               <tr key={index} className={file.error ? 'error-row' : ''}>
                 <td>{file.name}</td>
-                <td>{file.url ? '0:00' : 'N/A'}</td>
-                <td>{file.prompt}</td>
+                <td>{file.voice || 'N/A'}</td>
+                <td>{file.model || 'N/A'}</td>
+                <td style={{ maxWidth: '200px', wordWrap: 'break-word' }}>{file.prompt}</td>
+                <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>{file.instructions || 'None'}</td>
                 <td>
                   {file.url && (
                     <button onClick={() => playAudio(file)} style={{padding: '4px 8px', fontSize: '12px', marginRight: '2px'}}>Play</button>

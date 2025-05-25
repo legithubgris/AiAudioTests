@@ -261,6 +261,15 @@ tr.error-row td {
   background-color: #0b7dda;
 }
 
+.clear-playlist-btn {
+  background-color: #f44336 !important;
+  margin-left: 10px;
+}
+
+.clear-playlist-btn:hover {
+  background-color: #d32f2f !important;
+}
+
 /* Progress bar for batch processing */
 .progress-bar {
   width: 100%;

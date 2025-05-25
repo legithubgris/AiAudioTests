@@ -48,7 +48,6 @@ const App = () => {
   const [processingProgress, setProcessingProgress] = useState({ current: 0, total: 0 });
 
   // Listen for changes to file checkboxes
-  // Listen for changes to file checkboxes
   useEffect(() => {
     const handleFileCheckChanged = (event) => {
       const { index, checked } = event.detail;
@@ -64,6 +63,32 @@ const App = () => {
       window.removeEventListener('fileCheckChanged', handleFileCheckChanged);
     };
   }, []);
+  
+  // Clear cache data from other sessions when the service restarts
+  useEffect(() => {
+    const clearCacheOnRestart = () => {
+      // Clear any stored audio file references
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith('audio_') || key.startsWith('tts_cache_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
+      // Clear any sessionStorage as well
+      const sessionKeys = Object.keys(sessionStorage);
+      sessionKeys.forEach(key => {
+        if (key.startsWith('audio_') || key.startsWith('tts_cache_')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+      
+      console.log('Cache data from previous sessions cleared');
+    };
+
+    // Clear cache on component mount (service restart)
+    clearCacheOnRestart();
+  }, []); // Empty dependency array means this runs once on mount
   
   // Effect to handle API key changes
   useEffect(() => {
@@ -265,13 +290,61 @@ const App = () => {
     }
   };
 
-  // Add "Check All" and "Uncheck All" buttons functionality
-  const checkAll = () => {
-    setAudioFiles(prev => prev.map(file => ({ ...file, checked: true })));
+  // Add "Check All" and "Uncheck All" buttons functionality with dynamic text
+  const areAllSelected = audioFiles.length > 0 && audioFiles.every(file => file.checked);
+  
+  const toggleSelectAll = () => {
+    if (areAllSelected) {
+      // If all are selected, unselect all
+      setAudioFiles(prev => prev.map(file => ({ ...file, checked: false })));
+    } else {
+      // If some or none are selected, select all
+      setAudioFiles(prev => prev.map(file => ({ ...file, checked: true })));
+    }
   };
 
-  const uncheckAll = () => {
-    setAudioFiles(prev => prev.map(file => ({ ...file, checked: false })));
+  /**
+   * Clears the entire playlist and releases all blob URLs to free memory
+   */
+  const clearPlaylist = () => {
+    // Release all blob URLs to prevent memory leaks
+    audioFiles.forEach(file => {
+      if (file.url && typeof file.url === 'object') {
+        URL.revokeObjectURL(URL.createObjectURL(file.url));
+      }
+    });
+    
+    // Clear the audio files array
+    setAudioFiles([]);
+    setError(null);
+    console.log('Playlist cleared and memory released');
+  };
+
+  /**
+   * Clears only the selected files from the playlist
+   */
+  const clearSelectedFiles = () => {
+    const selectedIndexes = audioFiles
+      .map((file, index) => file.checked ? index : -1)
+      .filter(index => index !== -1);
+    
+    if (selectedIndexes.length === 0) {
+      alert('No files selected for removal.');
+      return;
+    }
+    
+    // Release blob URLs for selected files to prevent memory leaks
+    selectedIndexes.forEach(index => {
+      const file = audioFiles[index];
+      if (file.url && typeof file.url === 'object') {
+        URL.revokeObjectURL(URL.createObjectURL(file.url));
+      }
+    });
+    
+    // Remove selected files from the array
+    setAudioFiles(prev => prev.filter((file, index) => !file.checked));
+    setError(null);
+    console.log(`Removed ${selectedIndexes.length} selected files from playlist`);
   };
 
   /**
@@ -309,39 +382,69 @@ const App = () => {
 
   // Define the processRow function if missing
   const processRow = async (rowIndex, rowData, rowNumber, openaiClient) => {
-    const promptText = rowData["Prompt Text"] ? String(rowData["Prompt Text"]) : '';
-    let voice = rowData["Voice"] || 'alloy'; // Use "Voice" column if available
-    const instructions = rowData["Instructions"] || ''; // Use "Instructions" column if available
+    // Support multiple column name variations for flexibility
+    const promptText = rowData["Prompt Text"] || rowData["Prompt name"] || rowData["Text"] || rowData["A"] || '';
+    let model = rowData["Model"] || rowData["C"] || 'tts-1'; // Default to tts-1
+    let voice = rowData["Voice"] || rowData["D"] || 'alloy'; // Use "Voice" column if available
+    const instructions = rowData["Instructions"] || rowData["Prop text"] || rowData["E"] || rowData["B"] || ''; // Use "Instructions" column if available
+
+    // Convert to string to handle any data type issues
+    const promptString = String(promptText).trim();
+    const instructionsString = String(instructions).trim();
+    
+    if (!promptString) {
+      console.warn(`Row ${rowNumber}: No prompt text found, skipping`);
+      return { success: false, error: 'No prompt text' };
+    }
 
     // Validate the voice parameter
-    const allowedVoices = ['nova', 'shimmer', 'echo', 'onyx', 'fable', 'alloy', 'ash', 'sage', 'coral'];
-    if (!allowedVoices.includes(voice)) {
+    const allowedVoices = ['nova', 'shimmer', 'echo', 'onyx', 'fable', 'alloy', 'ballad', 'ash', 'sage', 'coral'];
+    if (!allowedVoices.includes(voice.toLowerCase())) {
       console.warn(`Invalid voice '${voice}' for row ${rowNumber}. Falling back to default 'alloy'.`);
       voice = 'alloy';
     }
 
-    try {
-      console.log(`Processing row ${rowNumber}: "${promptText.substring(0, 30)}..." with voice "${voice}"`);
+    // Validate model (OpenAI currently supports tts-1 and tts-1-hd)
+    const allowedModels = ['tts-1', 'tts-1-hd'];
+    if (!allowedModels.includes(model)) {
+      console.warn(`Invalid model '${model}' for row ${rowNumber}. Falling back to default 'tts-1'.`);
+      model = 'tts-1';
+    }
 
-      const response = await openaiClient.audio.speech.create({
-        model: "tts-1",
-        voice: voice,
-        input: promptText,
-        instructions: instructions || undefined,
-      });
+    try {
+      console.log(`Processing row ${rowNumber}: "${promptString.substring(0, 30)}..." with voice "${voice}", model "${model}", instructions: "${instructionsString.substring(0, 30)}..."`);
+
+      const requestData = {
+        model: model,
+        voice: voice.toLowerCase(),
+        input: promptString,
+      };
+
+      // Only add instructions if they exist and are not empty
+      if (instructionsString && instructionsString.length > 0) {
+        requestData.instructions = instructionsString;
+      }
+
+      const response = await openaiClient.audio.speech.create(requestData);
 
       const audioBlob = await response.blob();
-      const fileName = `Row${rowNumber}_${promptText.substring(0, 15).replace(/[^a-zA-Z0-9]/g, '_')}.mp3`;
+      const fileName = `Row${rowNumber}_${promptString.substring(0, 15).replace(/[^a-zA-Z0-9]/g, '_')}.mp3`;
 
       setAudioFiles(prev => [
         ...prev, 
         {
           name: fileName,
           url: audioBlob,
-          prompt: promptText,
+          prompt: promptString,
+          voice: voice,
+          model: model,
+          instructions: instructionsString,
           checked: false
         }
       ]);
+
+      // Update progress
+      setProcessingProgress(prev => ({ ...prev, current: prev.current + 1 }));
 
       return { success: true };
     } catch (err) {
@@ -352,11 +455,17 @@ const App = () => {
         {
           name: `Error_Row${rowNumber}.mp3`,
           url: null,
-          prompt: `Error with "${promptText ? promptText.substring(0, 30) : 'Empty prompt'}...": ${err.message}`,
+          prompt: `Error with "${promptString ? promptString.substring(0, 30) : 'Empty prompt'}...": ${err.message}`,
+          voice: voice,
+          model: model,
+          instructions: instructionsString,
           checked: false,
           error: true
         }
       ]);
+
+      // Update progress even for errors
+      setProcessingProgress(prev => ({ ...prev, current: prev.current + 1 }));
 
       return { success: false, error: err };
     }
@@ -402,14 +511,24 @@ const App = () => {
           <>
             <AudioList audioFiles={audioFiles} onDownload={handleDownload} />
             <div className="bulk-actions">
-              <button onClick={checkAll}>
-                Check All
-              </button>
-              <button onClick={uncheckAll}>
-                Uncheck All
+              <button onClick={toggleSelectAll}>
+                {areAllSelected ? 'Unselect All' : 'Select All'}
               </button>
               <button onClick={handleBulkDownload}>
                 Download Selected
+              </button>
+              <button 
+                onClick={() => {
+                  const hasSelectedFiles = audioFiles.some(file => file.checked);
+                  if (hasSelectedFiles) {
+                    clearSelectedFiles();
+                  } else {
+                    clearPlaylist();
+                  }
+                }}
+                className="clear-playlist-btn"
+              >
+                {audioFiles.some(file => file.checked) ? 'Clear Selected Files' : 'Clear Playlist'}
               </button>
             </div>
           </>
