@@ -61,10 +61,10 @@ The playlist now shows comprehensive information:
 ### Excel File Format
 Your Excel file should have these columns (headers optional):
 ```
-| Prompt Text (A) | Instructions (B) | Model (C) | Voice (D) | Instructions (E) |
-|-----------------|------------------|-----------|-----------|------------------|
-| Hello world     | Speak clearly    | tts-1     | alloy     |                  |
-| Another text    |                  | tts-1-hd  | nova      | Speak slowly     |
+| Prompt Text (A) | Instructions (B) | Model (C)          | Voice (D) | Instructions (E) |
+|-----------------|------------------|--------------------|-----------|------------------|
+| Hello world     | Speak clearly    | gpt-4o-mini-tts    | alloy     |                  |
+| Another text    |                  | gpt-4o-mini-tts    | nova      | Speak slowly     |
 ```
 
 ## Technical Details
@@ -73,8 +73,10 @@ Your Excel file should have these columns (headers optional):
 - alloy, echo, fable, onyx, nova, shimmer, ash, sage, coral
 
 ### Supported Models
+- gpt-4o-mini-tts (currently the best model)
 - tts-1 (faster, standard quality)
 - tts-1-hd (slower, higher quality)
+
 
 ### File Management
 - Audio files are stored as blobs in browser memory

@@ -1,0 +1,5 @@
+Prompt Text,Instructions,Model,Voice,Additional Instructions
+Hello world,Speak clearly,gpt-4o-mini-tts,alloy,
+Welcome to our service,Use a friendly tone,tts-1,nova,
+Thank you for using our platform,Be professional,tts-1-hd,echo,Speak slowly
+Have a great day,Sound cheerful,gpt-4o-mini-tts,coral,Use an upbeat tone

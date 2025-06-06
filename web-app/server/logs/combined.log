@@ -1,0 +1,21 @@
+{"level":"info","message":"Clearing any cached data on service restart","service":"tts-service","timestamp":"2025-06-06T09:31:29.078Z"}
+{"level":"info","message":"Server running on port 5001","service":"tts-service","timestamp":"2025-06-06T09:31:29.080Z"}
+{"level":"info","message":"Clearing any cached data on service restart","service":"tts-service","timestamp":"2025-06-06T09:32:14.419Z"}
+{"level":"info","message":"Server running on port 5001","service":"tts-service","timestamp":"2025-06-06T09:32:14.421Z"}
+{"level":"info","message":"Clearing any cached data on service restart","service":"tts-service","timestamp":"2025-06-06T09:32:21.559Z"}
+{"level":"info","message":"Server running on port 5001","service":"tts-service","timestamp":"2025-06-06T09:32:21.560Z"}
+{"level":"info","message":"OpenAI API key set successfully","service":"tts-service","timestamp":"2025-06-06T09:32:59.020Z"}
+{"filename":"miniTest.xlsx","level":"info","message":"Processing Excel file:","playlistId":"5d6f3df9-5296-4356-89b1-8251985f9975","service":"tts-service","timestamp":"2025-06-06T09:33:14.007Z"}
+{"input":"Prompt Name","instructions":"Prompt Text","level":"info","message":"Generating audio for row 1:","model":"tts-1","service":"tts-service","timestamp":"2025-06-06T09:33:14.021Z","voice":"alloy"}
+{"filename":"Prompt_Name_1749202394020_0.mp3","level":"info","message":"Audio generated successfully for row 1:","model":"tts-1","service":"tts-service","size":14400,"timestamp":"2025-06-06T09:33:15.530Z","voice":"alloy"}
+{"input":"4000000001","instructions":"I created a ticket number for you as a reference to this call. Do you want to write it down?","level":"info","message":"Generating audio for row 2:","model":"gpt-4o-mini-tts","service":"tts-service","timestamp":"2025-06-06T09:33:15.531Z","voice":"alloy"}
+{"filename":"4000000001_1749202395531_1.mp3","level":"info","message":"Audio generated successfully for row 2:","model":"gpt-4o-mini-tts","service":"tts-service","size":43392,"timestamp":"2025-06-06T09:33:16.162Z","voice":"alloy"}
+{"input":"4000000002","instructions":"OK, and I just wanted to check if I was able to address all your concerns today.","level":"info","message":"Generating audio for row 3:","model":"gpt-4o-mini-tts","service":"tts-service","timestamp":"2025-06-06T09:33:16.162Z","voice":"alloy"}
+{"filename":"4000000002_1749202396162_2.mp3","level":"info","message":"Audio generated successfully for row 3:","model":"gpt-4o-mini-tts","service":"tts-service","size":22656,"timestamp":"2025-06-06T09:33:18.093Z","voice":"alloy"}
+{"input":"4000000003","instructions":"OK, and thanks again for calling Microsoft Store.","level":"info","message":"Generating audio for row 4:","model":"gpt-4o-mini-tts","service":"tts-service","timestamp":"2025-06-06T09:33:18.094Z","voice":"alloy"}
+{"filename":"4000000003_1749202398094_3.mp3","level":"info","message":"Audio generated successfully for row 4:","model":"gpt-4o-mini-tts","service":"tts-service","size":67968,"timestamp":"2025-06-06T09:33:19.456Z","voice":"alloy"}
+{"errors":0,"level":"info","message":"Excel processing completed:","playlistId":"5d6f3df9-5296-4356-89b1-8251985f9975","service":"tts-service","successful":4,"timestamp":"2025-06-06T09:33:19.459Z","totalFiles":4}
+{"level":"info","message":"Clearing any cached data on service restart","service":"tts-service","timestamp":"2025-06-06T09:35:49.362Z"}
+{"level":"info","message":"Server running on port 5001","service":"tts-service","timestamp":"2025-06-06T09:35:49.364Z"}
+{"level":"info","message":"Clearing any cached data on service restart","service":"tts-service","timestamp":"2025-06-06T09:43:16.083Z"}
+{"level":"info","message":"Server running on port 5001","service":"tts-service","timestamp":"2025-06-06T09:43:16.085Z"}
