@@ -1,0 +1,16 @@
+﻿Prompt Name,Prompt Text,Model,Voice,Instructions,,,Available Names,Avaiable modes
+4000000001,I created a ticket number for you as a reference to this call. Do you want to write it down?,gpt-4o-mini-tts,alloy,"voice: The voice should be converstational, yet trustworty, such as calling the front desk of a 5 star hotel
+tone: Smooth, enunciate important words in sentences, trustworthy.
+Personality: Inviting confidence, casual and friendly, like a childhood friend. Offer options for the listener, but do not attack them for being incorrect.
+Pronunciation: There should be a good rhythm to the voice, elocution, but never in a condescending manner.
+pronunciation: Sentences should be fluid, conversational,  slightly slower for URLs and phone number. Focus on pronunciation  when offering someone choices.",,,alloy,tts-1
+4000000002,"OK, and I just wanted to check if I was able to address all your concerns today.",gpt-4o-mini-tts,alloy,"voice: The voice should be converstational, yet trustworty, such as calling the front desk of a 5 star hotel
+tone: Smooth, enunciate important words in sentences, trustworthy.
+Personality: Inviting confidence, casual and friendly, like a childhood friend. Offer options for the listener, but do not attack them for being incorrect.
+Pronunciation: There should be a good rhythm to the voice, elocution, but never in a condescending manner.
+pronunciation: Sentences should be fluid, conversational,  slightly slower for URLs and phone number. Focus on pronunciation  when offering someone choices.",,,ash,tts-1-hd
+4000000003,"OK, and thanks again for calling Microsoft Store.",gpt-4o-mini-tts,alloy,"voice: The voice should be converstational, yet trustworty, such as calling the front desk of a 5 star hotel
+tone: Smooth, enunciate important words in sentences, trustworthy.
+Personality: Inviting confidence, casual and friendly, like a childhood friend. Offer options for the listener, but do not attack them for being incorrect.
+Pronunciation: There should be a good rhythm to the voice, elocution, but never in a condescending manner.
+pronunciation: Sentences should be fluid, conversational,  slightly slower for URLs and phone number. Focus on pronunciation  when offering someone choices.",,,ballad,gpt-4o-mini-tts

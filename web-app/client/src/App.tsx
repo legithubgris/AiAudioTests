@@ -7,6 +7,7 @@ import './App.css';
 interface AudioFile {
   id: string;
   filename: string;
+  promptName: string;
   promptText: string;
   instructions: string;
   voice: string;
@@ -45,11 +46,27 @@ function App() {
 
   const API_BASE = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001';
 
-  // Clear cache on component mount
+  // Clear cache on component mount and check API key status
   React.useEffect(() => {
     localStorage.clear();
     sessionStorage.clear();
-  }, []);
+    
+    // Check if API key is already set on the backend
+    const checkApiKeyStatus = async () => {
+      try {
+        const response = await axios.get(`${API_BASE}/api/tts/api-key-status`);
+        if (response.data.isSet) {
+          setApiKeySet(true);
+          setMessage('API key loaded from environment variables');
+        }
+      } catch (error) {
+        console.log('Could not check API key status:', error);
+        // If this fails, user will need to enter API key manually
+      }
+    };
+    
+    checkApiKeyStatus();
+  }, [API_BASE]);
 
   const setApiKeyHandler = async () => {
     if (!apiKey || !apiKey.startsWith('sk-')) {
@@ -407,7 +424,7 @@ function App() {
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4">Upload Excel File</h2>
               <p className="text-gray-600 mb-4">
-                Upload an Excel file with columns: Prompt Text (A), Instructions (B), Model (C), Voice (D), Instructions (E)
+                Upload an Excel file with columns: Prompt Name (A), Prompt Text (B), Model (C), Voice (D), Instructions (E)
               </p>
               
               <input
@@ -480,6 +497,12 @@ function App() {
                               </span>
                             )}
                           </div>
+                          
+                          {file.promptName && (
+                            <div className="text-sm text-gray-600 mb-1">
+                              <strong>Name:</strong> {file.promptName}
+                            </div>
+                          )}
                           
                           <div className="text-sm text-gray-600 mb-1">
                             <strong>Text:</strong> {file.promptText}

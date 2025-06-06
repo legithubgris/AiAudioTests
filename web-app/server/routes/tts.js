@@ -35,7 +35,25 @@ const playlists = new Map();
 // Initialize OpenAI client
 let openai = null;
 
-// Validate and set API key
+// Auto-initialize OpenAI client if API key is available in environment
+if (process.env.OPENAI_API_KEY) {
+  try {
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    console.log('OpenAI client initialized automatically from environment variables');
+  } catch (error) {
+    console.error('Failed to initialize OpenAI client from environment:', error);
+  }
+}
+
+// Check if API key is already set (for frontend to know)
+router.get('/api-key-status', (req, res) => {
+  res.json({ 
+    isSet: !!openai,
+    message: openai ? 'API key is set' : 'API key not set'
+  });
+});
+
+// Validate and set API key (fallback for manual entry)
 router.post('/set-api-key', (req, res) => {
   const { apiKey } = req.body;
   
@@ -124,10 +142,17 @@ router.post('/process-excel', upload.single('excelFile'), async (req, res) => {
     const worksheet = workbook.Sheets[sheetName];
     const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
 
-    // Remove header row if it exists
-    const rows = data.filter(row => row.some(cell => cell && cell.toString().trim()));
+    // Remove header row if it exists and filter empty rows
+    let rows = data.filter(row => row.some(cell => cell && cell.toString().trim()));
     if (rows.length === 0) {
       throw new Error('No data found in Excel file');
+    }
+
+    // Skip header row if first row contains header-like content
+    if (rows.length > 0 && rows[0][0] && 
+        rows[0][0].toString().toLowerCase().includes('prompt')) {
+      rows = rows.slice(1);
+      req.logger.info('Header row detected and skipped');
     }
 
     const playlist = {
@@ -147,10 +172,11 @@ router.post('/process-excel', upload.single('excelFile'), async (req, res) => {
       }
 
       // Parse columns according to specification
-      const promptText = row[0] ? row[0].toString().trim() : '';
-      const instructions = row[1] ? row[1].toString().trim() : (row[4] ? row[4].toString().trim() : '');
+      const promptName = row[0] ? row[0].toString().trim() : '';
+      const promptText = row[1] ? row[1].toString().trim() : '';
       const model = row[2] ? row[2].toString().trim() : 'tts-1';
       const voice = row[3] ? row[3].toString().trim() : 'alloy';
+      const instructions = row[4] ? row[4].toString().trim() : '';
 
       if (!promptText) {
         req.logger.warn(`Skipping row ${i + 1}: No prompt text`);
@@ -161,9 +187,17 @@ router.post('/process-excel', upload.single('excelFile'), async (req, res) => {
       const selectedVoice = SUPPORTED_VOICES.includes(voice.toLowerCase()) ? voice.toLowerCase() : 'alloy';
       const selectedModel = SUPPORTED_MODELS.includes(model.toLowerCase()) ? model.toLowerCase() : 'tts-1';
       
-      // Create filename from prompt text (sanitized)
-      const sanitizedPrompt = promptText.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_').substring(0, 50);
-      const filename = `${sanitizedPrompt}_${Date.now()}_${i}.mp3`;
+      // Create filename from prompt name (or fallback to sanitized prompt text)
+      let filename;
+      if (promptName) {
+        // Use prompt name as specified in baseline requirements - only the contents of this cell
+        const sanitizedName = promptName.replace(/[^a-zA-Z0-9]/g, '');
+        filename = `${sanitizedName}.mp3`;
+      } else {
+        // Fallback to sanitized prompt text if no prompt name provided
+        const sanitizedPrompt = promptText.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_').substring(0, 50);
+        filename = `${sanitizedPrompt}_${Date.now()}_${i}.mp3`;
+      }
 
       const requestData = {
         model: selectedModel,
@@ -185,6 +219,7 @@ router.post('/process-excel', upload.single('excelFile'), async (req, res) => {
         playlist.files.push({
           id: uuidv4(),
           filename,
+          promptName,
           promptText,
           instructions,
           voice: selectedVoice,
@@ -207,6 +242,7 @@ router.post('/process-excel', upload.single('excelFile'), async (req, res) => {
         playlist.files.push({
           id: uuidv4(),
           filename: `error_${i}.mp3`,
+          promptName,
           promptText,
           instructions,
           voice: selectedVoice,

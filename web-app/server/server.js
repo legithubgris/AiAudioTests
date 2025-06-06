@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs-extra');
 const winston = require('winston');
+require('dotenv').config();
 
 // Import routes
 const ttsRoutes = require('./routes/tts');

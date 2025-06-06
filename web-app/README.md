@@ -60,11 +60,11 @@ A comprehensive web application for generating audio from text using OpenAI's Te
 ### Excel File Processing
 
 1. Prepare an Excel file with the following columns:
-   - **Column A**: Prompt Text (required)
-   - **Column B**: Instructions (optional)
+   - **Column A**: Prompt Name (required - used as exact filename)
+   - **Column B**: Prompt Text (required - text to convert to speech)
    - **Column C**: Model (optional, defaults to 'tts-1')
    - **Column D**: Voice (optional, defaults to 'alloy')
-   - **Column E**: Alternative Instructions (optional)
+   - **Column E**: Instructions (optional - persona/style instructions)
 
 2. Upload the Excel file using the file input
 3. Wait for processing to complete
@@ -92,14 +92,15 @@ A comprehensive web application for generating audio from text using OpenAI's Te
 
 Example Excel structure:
 
-| Prompt Text (A) | Instructions (B) | Model (C) | Voice (D) | Instructions (E) |
-|-----------------|------------------|-----------|-----------|------------------|
-| Hello world     | Speak clearly    | tts-1     | alloy     |                  |
-| Another text    |                  | tts-1-hd  | nova      | Speak slowly     |
+| Prompt Name (A) | Prompt Text (B) | Model (C) | Voice (D) | Instructions (E) |
+|-----------------|-----------------|-----------|-----------|------------------|
+| 4000000001     | Hello world      | tts-1     | alloy     | Speak clearly    |
+| 4000000002     | Another text     | tts-1-hd  | nova      | Speak slowly     |
 
 **Notes**:
-- Only Column A (Prompt Text) is required
-- Instructions can be in Column B or E
+- Column A (Prompt Name) is used as the exact filename (e.g., "4000000001.mp3")
+- Column B (Prompt Text) is required - this is the text converted to speech
+- Instructions are in Column E
 - Invalid voices/models will fall back to defaults
 - Empty rows are automatically skipped
 

@@ -1,3 +1,5 @@
+#LATEST APIKEY:  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
+
 # TTS Website - Complete Implementation
 
 ## ✅ Successfully Built and Deployed
@@ -8,12 +10,12 @@ The TTS (Text-to-Speech) web application has been successfully created and is no
 
 #### 1. Excel File Processing ✅
 - **Column Parsing**: Correctly processes Excel files with columns A-E as specified:
-  - **Column A**: Prompt Text (used as filename base and TTS input)
-  - **Column B**: Instructions (optional persona/style instructions)
+  - **Column A**: Prompt Name (used as the exact filename)
+  - **Column B**: Prompt Text (the text sent to TTS API)
   - **Column C**: Model (falls back to 'tts-1' if invalid)
   - **Column D**: Voice (falls back to 'alloy' if invalid)
-  - **Column E**: Alternative instructions field
-- **File Naming**: Uses only the contents of Column A for filename (sanitized)
+  - **Column E**: Instructions (persona/style instructions)
+- **File Naming**: Uses only the contents of Column A for filename (no modifications)
 - **Model Validation**: Ensures correct model is sent to API (fixes the model issue mentioned)
 
 #### 2. Comprehensive Logging ✅
@@ -59,11 +61,11 @@ The TTS (Text-to-Speech) web application has been successfully created and is no
 #### Excel File Format
 Create an Excel file with these columns (headers optional):
 ```
-Column A: Hello world
-Column B: Speak clearly  
+Column A: 4000000001
+Column B: I created a ticket number for you as a reference to this call. Do you want to write it down?
 Column C: gpt-4o-mini-tts
 Column D: alloy
-Column E: (alternative instructions)
+Column E: voice: The voice should be conversational, yet trustworthy...
 ```
 
 ### 🛠 Technical Architecture
